@@ -34,7 +34,7 @@ const RESUME_DATA = {
   },
   skills: {
     frontend: ["React.js", "Next.js", "TypeScript", "JavaScript", "React Native", "Tailwind CSS", "Shadcn UI", "Redux"], 
-    backend: ["Node.js", "GraphQL", "WebSockets", "AWS", "Docker", "Firebase", "PostgreSQL,Python"],
+    backend: ["Node.js", "GraphQL", "WebSockets", "AWS", "Docker", "Firebase", "PostgreSQL", "Python"],
     tools: ["Git", "GitHub Actions", "Vite", "Figma"],
     leadership: ["Team Leadership", "Architecture Design", "Code Review", "Technical Documentation"]
   },
@@ -257,7 +257,50 @@ const MinimalProject = ({ name, tech, description }) => (
     <p className="text-sm text-zinc-600 font-light leading-relaxed">{description}</p>
   </div>
 );
-
+const LoadingScreen = ({ isMounted }) => {
+    return (
+        <div className={`fixed inset-0 bg-white z-[100] transition-opacity duration-700 ${isMounted ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className="flex flex-col items-center justify-center h-full">
+                <div className="relative w-20 h-20">
+                    {/* The code tag icon */}
+                    <svg className="w-20 h-20 text-black absolute inset-0 animate-spin-slow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <style>
+                            {`
+                                @keyframes rotate-slow {
+                                    from { transform: rotate(0deg); }
+                                    to { transform: rotate(360deg); }
+                                }
+                                .animate-spin-slow {
+                                    animation: rotate-slow 5s linear infinite;
+                                }
+                                .animate-fade-in-out {
+                                    animation: fade-in-out 2s infinite alternate;
+                                }
+                                @keyframes fade-in-out {
+                                    0% { opacity: 0.2; }
+                                    100% { opacity: 1; }
+                                }
+                                .stagger-delay-1 { animation-delay: 0.2s; }
+                                .stagger-delay-2 { animation-delay: 0.4s; }
+                                .stagger-delay-3 { animation-delay: 0.6s; }
+                            `}
+                        </style>
+                        {/* Outer bracket 1 */}
+                        <path className="animate-fade-in-out" d="M14 6L19 12L14 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        {/* Outer bracket 2 */}
+                        <path className="animate-fade-in-out stagger-delay-1" d="M10 18L5 12L10 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        {/* Inner slash (Code) */}
+                        <path className="animate-fade-in-out stagger-delay-2" d="M9 3H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path className="animate-fade-in-out stagger-delay-3" d="M9 21H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </div>
+                <p className="text-xs uppercase tracking-[0.3em] font-light text-zinc-500 mt-8 animate-pulse">
+                    LOADING HARSHA SRINIVAS PORTFOLIO...
+                </p>
+            </div>
+        </div>
+    );
+};
 // --- Main App ---
 
 const App = () => {
@@ -279,7 +322,16 @@ const App = () => {
   const [recruiterRole, setRecruiterRole] = useState('');
   const [generatedEmail, setGeneratedEmail] = useState('');
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isLoadingScreen, setIsLoadingScreen] = useState(true); 
 
+useEffect(() => {
+    // Simulate network delay/initialization
+    const timer = setTimeout(() => {
+        setIsLoadingScreen(false);
+    }, 2500); // 2.5 second display for the cool animation
+
+    return () => clearTimeout(timer);
+  }, []);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isChatLoading]);
@@ -346,6 +398,7 @@ const App = () => {
           background: #a1a1aa;
         }
       `}</style>
+      <LoadingScreen isMounted={isLoadingScreen} />
 
       <div className="flex h-screen bg-white font-sans text-zinc-900 overflow-hidden relative selection:bg-black selection:text-white">
         
